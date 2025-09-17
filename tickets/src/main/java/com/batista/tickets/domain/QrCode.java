@@ -1,21 +1,21 @@
 package com.batista.tickets.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,37 +24,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "qr_codes")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class QrCode {
 
   @Id
   @Column(name = "id", nullable = false, updatable = false)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
   @Column(name = "name", nullable = false)
-  private String name;
+  @Enumerated(EnumType.STRING)
+  private QrCodeStatusEnum status;
 
-  @Column(name = "email", nullable = false)
-  private String email;
+  @Column(name = "value", nullable = false)
+  private String value;
 
-  @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL)
-  @Builder.Default
-  private List<Event> organizedEvents = new ArrayList<>();
-
-  @ManyToMany
-  @JoinTable(name = "user_attending_events", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
-  @Builder.Default
-  private List<Event> attendingEvents = new ArrayList<>();
-
-  @ManyToMany
-  @JoinTable(name = "user_staffing_events", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
-  @Builder.Default
-  private List<Event> staffingEvents = new ArrayList<>();
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ticket_id")
+  private Ticket ticket;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
@@ -69,8 +61,8 @@ public class User {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((email == null) ? 0 : email.hashCode());
+    result = prime * result + ((status == null) ? 0 : status.hashCode());
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
     result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
     result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
     return result;
@@ -84,21 +76,18 @@ public class User {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    User other = (User) obj;
+    QrCode other = (QrCode) obj;
     if (id == null) {
       if (other.id != null)
         return false;
     } else if (!id.equals(other.id))
       return false;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
+    if (status != other.status)
       return false;
-    if (email == null) {
-      if (other.email != null)
+    if (value == null) {
+      if (other.value != null)
         return false;
-    } else if (!email.equals(other.email))
+    } else if (!value.equals(other.value))
       return false;
     if (createdAt == null) {
       if (other.createdAt != null)
