@@ -1,4 +1,4 @@
-package com.batista.tickets.domain;
+package com.batista.tickets.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +45,9 @@ public class TicketType {
   @Column(name = "price", nullable = false)
   private Double price;
 
+  @Column(name = "description")
+  private String description;
+
   @Column(name = "total_available")
   private Integer totalAvailable;
 
@@ -71,6 +74,7 @@ public class TicketType {
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((price == null) ? 0 : price.hashCode());
+    result = prime * result + ((description == null) ? 0 : description.hashCode());
     result = prime * result + ((totalAvailable == null) ? 0 : totalAvailable.hashCode());
     result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
     result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
@@ -100,6 +104,11 @@ public class TicketType {
       if (other.price != null)
         return false;
     } else if (!price.equals(other.price))
+      return false;
+    if (description == null) {
+      if (other.description != null)
+        return false;
+    } else if (!description.equals(other.description))
       return false;
     if (totalAvailable == null) {
       if (other.totalAvailable != null)
