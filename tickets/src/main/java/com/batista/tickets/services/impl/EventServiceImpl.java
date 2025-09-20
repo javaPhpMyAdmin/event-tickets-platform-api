@@ -1,7 +1,6 @@
 package com.batista.tickets.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

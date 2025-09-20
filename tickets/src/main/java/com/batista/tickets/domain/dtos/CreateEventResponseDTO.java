@@ -1,8 +1,8 @@
-package com.batista.tickets.domain;
+package com.batista.tickets.domain.dtos;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.batista.tickets.domain.entities.EventStatusEnum;
 
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateEventRequest {
-
+public class CreateEventResponseDTO {
+  private UUID id;
   private String name;
   private LocalDateTime start;
   private LocalDateTime end;
@@ -22,5 +22,7 @@ public class CreateEventRequest {
   private LocalDateTime salesStart;
   private LocalDateTime salesEnd;
   private EventStatusEnum status;
-  private List<CreateTicketTypeRequest> ticketTypes = new ArrayList<>();
+  private List<CreateTicketTypeResponseDTO> ticketTypes;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 }
