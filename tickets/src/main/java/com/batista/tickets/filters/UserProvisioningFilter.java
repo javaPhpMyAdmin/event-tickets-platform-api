@@ -33,7 +33,8 @@ public class UserProvisioningFilter extends OncePerRequestFilter {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication != null && authentication.isAuthenticated() && authentication instanceof Jwt jwt) {
+    if (authentication != null && authentication.isAuthenticated()
+        && authentication.getPrincipal() instanceof Jwt jwt) {
       UUID keycloakId = UUID.fromString(jwt.getSubject());
 
       if (!userRepository.existsById(keycloakId)) {
@@ -45,8 +46,9 @@ public class UserProvisioningFilter extends OncePerRequestFilter {
         userRepository.save(user);
       }
 
-      filterChain.doFilter(request, response);
     }
+
+    filterChain.doFilter(request, response);
   }
 
 }

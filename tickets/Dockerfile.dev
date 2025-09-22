@@ -1,0 +1,15 @@
+FROM maven:3.9.9-eclipse-temurin-17
+WORKDIR /app
+
+# Copia solo pom.xml primero para cachear dependencias
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copia el código fuente
+COPY . .
+
+# Exponer el puerto de la app y el debugger remoto
+EXPOSE 8083 5005
+
+# Habilitar modo "devtools" + reinicio automático
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true -Dspring.devtools.livereload.enabled=true"]

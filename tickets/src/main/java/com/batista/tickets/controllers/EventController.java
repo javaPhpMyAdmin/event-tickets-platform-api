@@ -1,5 +1,6 @@
 package com.batista.tickets.controllers;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -19,15 +20,23 @@ import com.batista.tickets.services.EventService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping(path = "/api/v1/events")
+@RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
 public class EventController {
 
-  private EventMapper eventMapper;
+  private final EventMapper eventMapper;
   private final EventService eventService;
 
+  @GetMapping()
+  public Map<String, String> getMethodName() {
+    return Map.of("message", "Test get method from container");
+  }
+
+  @PostMapping()
   public ResponseEntity<CreateEventResponseDTO> createEvent(
       @Valid @RequestBody CreateEventRequestDTO createEventRequestDTO,
       @AuthenticationPrincipal Jwt jwt) {

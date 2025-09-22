@@ -3,7 +3,6 @@ package com.batista.tickets.domain.entities;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -46,10 +45,10 @@ public class Event {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "start")
+  @Column(name = "event_start")
   private LocalDateTime start;
 
-  @Column(name = "end")
+  @Column(name = "event_end")
   private LocalDateTime end;
 
   @Column(name = "venue", nullable = false)
