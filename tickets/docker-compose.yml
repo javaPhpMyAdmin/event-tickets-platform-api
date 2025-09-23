@@ -24,6 +24,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      
 
   # Our postgres database
   db:
@@ -31,21 +32,19 @@ services:
     environment:
       POSTGRES_PASSWORD: nosemueve
       POSTGRES_DB: event_ticket_platform 
+      POSTGRES_MULTIPLE_DATABASES: event_ticket_platform,keycloak_db
     restart: always
     ports:
       - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Database management interface
-  # adminer:
-  #   image: adminer:latest
-  #   restart: always
-  #   ports:
-  #     - "8888:8080"
   pgadmin:
     image: dpage/pgadmin4:latest
     restart: always
@@ -62,18 +61,22 @@ services:
     ports:
       - "9090:8080"
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin 
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin 
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/keycloak_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: nosemueve
     volumes:
       - keycloak-data:/opt/keycloak/data
-    command: 
-      - start-dev
-      - --db=dev-file
+    command: ["start-dev"]
+    depends_on:
+      - db
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
       interval: 20s
       timeout: 10s
       retries: 10
 volumes:
+  postgres-data:
   keycloak-data:
-    driver: local
