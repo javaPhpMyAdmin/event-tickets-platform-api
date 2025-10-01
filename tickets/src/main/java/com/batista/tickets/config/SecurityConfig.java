@@ -1,5 +1,7 @@
 package com.batista.tickets.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +22,13 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http, UserProvisioningFilter userProvisioningFilter)
       throws Exception {
     System.out.println(">>> SecurityFilterChain bean creado");
+    http.cors(cors -> cors.configurationSource(request -> {
+      var config = new org.springframework.web.cors.CorsConfiguration();
+      config.setAllowedOrigins(List.of("http://localhost:5173"));
+      config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+      config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+      return config;
+    }));
     http
         .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, "/api/v1/events").permitAll()
             .anyRequest().authenticated())

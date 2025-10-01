@@ -35,6 +35,7 @@ public class UserProvisioningFilter extends OncePerRequestFilter {
 
     if (authentication != null && authentication.isAuthenticated()
         && authentication.getPrincipal() instanceof Jwt jwt) {
+      System.out.println("***********UserProvisioningFilter---->>" + authentication);
       UUID keycloakId = UUID.fromString(jwt.getSubject());
 
       if (!userRepository.existsById(keycloakId)) {
