@@ -1,6 +1,1 @@
-tls:
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /certs/localtest.me.crt
-        keyFile: /certs/localtest.me.key
+

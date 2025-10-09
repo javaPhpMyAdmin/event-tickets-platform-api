@@ -208,17 +208,10 @@ services:
     command:
       - "start-dev"
       - "--hostname=auth.localtest.me"
-      # - "--hostname-strict=false"
       - "--http-enabled=true"
       - "--proxy-headers=xforwarded"
     depends_on:
       - db
-    # healthcheck:
-    #   test: ["CMD-SHELL", "nc -z localhost 8080 || exit 1"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 10
-
   # Traefik Reverse Proxy
   traefik:
     image: traefik:v3.0
