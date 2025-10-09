@@ -37,3 +37,5 @@ certs/*.key
 certs/*.crt
 *.pem
 localtest.me.crt
+.env
+.env.bak
