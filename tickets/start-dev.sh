@@ -1,20 +1,53 @@
 # #!/bin/bash
 # set -e
+# export MSYS_NO_PATHCONV=1  # Evita conversiones de ruta automáticas en Git Bash
 
-# # Backup .env
+# echo "🚀 Levantando entorno de desarrollo con Traefik..."
+
+# # Backup .env si existe
 # if [ -f .env ]; then
 #   mv .env .env.bak
 # fi
 
-# # Variables de entorno para docker compose
-# export ENV_FILE=$(pwd)/.env.dev
-# export DOCKER_FILE=Dockerfile.dev
+# # Detectar sistema operativo y construir rutas correctas
+# if [[ "$OS" == "Windows_NT" ]]; then
+#   # En Git Bash (Windows)
+#   PROJECT_PATH=$(pwd -W)
+# else
+#   # En macOS / Linux
+#   PROJECT_PATH=$(pwd)
+# fi
 
-# # Build y levantar contenedores
-# docker compose --env-file "$ENV_FILE" -f docker-compose.yml build --no-cache
-# docker compose --env-file "$ENV_FILE" -f docker-compose.yml up -d --force-recreate
+# export ENV_FILE="$PROJECT_PATH/.env.dev"
+# export DOCKER_FILE="Dockerfile.dev"
 
-# # Restaurar .env original
+# # Verificar que el archivo .env.dev exista
+# if [ ! -f "$ENV_FILE" ]; then
+#   echo "❌ No se encontró el archivo .env.dev en $ENV_FILE"
+#   exit 1
+# fi
+
+# # Crear carpeta de certificados si no existe
+# mkdir -p "$PROJECT_PATH/certs"
+
+# # Generar certificados autofirmados si no existen
+# if [ ! -f "$PROJECT_PATH/certs/localtest.me.crt" ] || [ ! -f "$PROJECT_PATH/certs/localtest.me.key" ]; then
+#   echo "🔑 Generando certificado autofirmado para api.localtest.me y auth.localtest.me..."
+#   openssl req -x509 -nodes -days 365 \
+#     -newkey rsa:2048 \
+#     -keyout "$PROJECT_PATH/certs/localtest.me.key" \
+#     -out "$PROJECT_PATH/certs/localtest.me.crt" \
+#     -subj "//CN=localtest.me" \
+#     -addext "subjectAltName=DNS:localtest.me,DNS:api.localtest.me,DNS:auth.localtest.me"
+# else
+#   echo "🔒 Certificados ya existen, no se regeneran."
+# fi
+
+# # Build y levantar contenedores con Traefik
+# docker compose --env-file "$ENV_FILE" -f "$PROJECT_PATH/docker-compose.yml" build --no-cache
+# docker compose --env-file "$ENV_FILE" -f "$PROJECT_PATH/docker-compose.yml" up -d --force-recreate
+
+# # Restaurar .env original si había uno
 # if [ -f .env.bak ]; then
 #   mv .env.bak .env
 # fi
@@ -154,6 +187,7 @@ echo "📝 traefik-dynamic.yml actualizado con los certificados recién generado
 docker compose --env-file "$ENV_FILE" -f "$PROJECT_PATH/docker-compose.yml" build --no-cache
 docker compose --env-file "$ENV_FILE" -f "$PROJECT_PATH/docker-compose.yml" up -d --force-recreate
 
+# Restaurar .env original si había uno
 # Restaurar .env original si había uno
 if [ -f .env.bak ]; then
   mv .env.bak .env
