@@ -136,7 +136,7 @@ else
   PROJECT_PATH=$(pwd)     # macOS / Linux
   export TRAEFIK_HTTP_PORT=80
   export TRAEFIK_HTTPS_PORT=443
-  export TRAEFIK_DASHBOARD_PORT=8080
+  export TRAEFIK_DASHBOARD_PORT=8088
 fi
 
 export ENV_FILE="$PROJECT_PATH/.env.dev"
