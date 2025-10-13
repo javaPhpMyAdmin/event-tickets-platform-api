@@ -37,3 +37,8 @@ certs/*.key
 certs/*.crt
 .env
 .env.bak
+
+Dockerfile
+*.prod.yml
+*.prod
+setup_ssh_vps.sh
